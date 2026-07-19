@@ -4,6 +4,12 @@ const createNote = async (req, res) => {
   try {
     const { title, description } = req.body;
 
+    if (!title || !description) {
+      return res.status(400).json({
+        message: "Title and Description are required",
+      });
+    }
+
     const note = await Note.create({
       title,
       description,
