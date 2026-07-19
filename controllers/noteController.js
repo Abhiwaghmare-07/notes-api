@@ -13,6 +13,7 @@ const createNote = async (req, res) => {
     const note = await Note.create({
       title,
       description,
+        owner: req.user._id,
     });
 
     res.status(201).json(note);
@@ -22,20 +23,13 @@ const createNote = async (req, res) => {
     });
   }
 };
-const getAllNotes = async (req, res) => {
-  try {
-    const notes = await Note.find();
-
-    res.status(200).json(notes);
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-};
+// Get Note By ID
 const getNoteById = async (req, res) => {
   try {
-    const note = await Note.findById(req.params.id);
+     const note = await Note.findOne({
+  _id: req.params.id,
+  owner: req.user._id,
+});
 
     if (!note) {
       return res.status(404).json({
@@ -44,6 +38,48 @@ const getNoteById = async (req, res) => {
     }
 
     res.status(200).json(note);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+const getAllNotes = async (req, res) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 5;
+
+    const skip = (page - 1) * limit;
+
+    const { search } = req.query;
+
+    let filter = {};
+
+    if (search) {
+      filter = {
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { description: { $regex: search, $options: "i" } },
+        ],
+      };
+    }
+
+   const notes = await Note.find({
+  owner: req.user._id,
+  ...filter,
+})
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalNotes = await Note.countDocuments(filter);
+
+    res.status(200).json({
+      totalNotes,
+      currentPage: page,
+      totalPages: Math.ceil(totalNotes / limit),
+      notes,
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,
