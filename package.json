@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Abhiwaghmare-07/notes-api/issues"
   },
-  "homepage": "https://github.com/Abhiwaghmare-07/notes-api#readme"
+  "homepage": "https://github.com/Abhiwaghmare-07/notes-api#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
 }
