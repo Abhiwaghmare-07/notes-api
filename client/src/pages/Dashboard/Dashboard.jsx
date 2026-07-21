@@ -1,5 +1,7 @@
+import { Navigate } from "react-router-dom";
+
 const Dashboard = () => {
-  return <h1>Dashboard Page</h1>;
+  return <Navigate to="/notes" />;
 };
 
 export default Dashboard;
