@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import { loginUser } from "../../services/authService";
+import useAuth from "../../hooks/useAuth";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -21,23 +25,24 @@ const Login = () => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      alert("Please fill in all fields.");
+      toast.error("Please fill in all fields");
       return;
     }
 
     try {
       const response = await loginUser(formData);
 
-      console.log(response.data);
+      // Save user and token using AuthContext
+      login(response.data.user, response.data.token);
 
-      alert("Login Successful!");
+      toast.success(response.data.message);
 
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
 
-      alert(
-        error.response?.data?.message || "Login failed. Please try again."
+      toast.error(
+        error.response?.data?.message || "Login failed"
       );
     }
   };
@@ -86,7 +91,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-200"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
           >
             Login
           </button>
