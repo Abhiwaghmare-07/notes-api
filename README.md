@@ -40,3 +40,52 @@ Users can register, log in securely using JWT authentication, and manage their p
 - Mongoose
 - JWT
 - bcrypt
+
+## Installation
+
+### Backend
+
+```bash
+npm install
+npm run dev
+```
+
+### Frontend
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+---
+
+## Environment Variables
+
+```env
+PORT=
+MONGO_URI=
+JWT_SECRET=
+```
+
+---
+
+## API Endpoints
+
+### Authentication
+
+POST /api/users/register
+
+POST /api/users/login
+
+### Notes
+
+GET /api/notes
+
+GET /api/notes/:id
+
+POST /api/notes
+
+PUT /api/notes/:id
+
+DELETE /api/notes/:id
